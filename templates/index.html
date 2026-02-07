@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transparent Queue Desktop Experience</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+  @keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+
+.animate-fade-in {
+  animation: fadeIn 0.35s ease-out forwards;
+}
+
+
+        :root {
+            --mint-green: #E8F5F1;
+            --mint-dark: #599994;
+            --soft-blue: #E3F2FD;
+            --blue-accent: #64B5F6;
+            --warm-amber: #FFF8E1;
+            --amber-accent: #F29472;
+            --slate-base: #F8FAFC;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--slate-base);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .circular-progress {
+            background: conic-gradient(var(--mint-dark) 75%, transparent 0);
+        }
+    </style>
+</head>
+
+
+<body class="text-slate-800 min-h-screen flex flex-col">
+<header class="px-10 py-6 flex justify-between items-center bg-white/50 backdrop-blur-sm border-b border-slate-100">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl overflow-hidden shadow-lg">
+  <img
+    src="{{ url_for('static', filename='Gemini_Generated_Image_4mxgvv4mxgvv4mxg.png') }}"
+    alt="Transparent Queue Logo"
+    class="w-full h-full object-contain"
+  />
+</div>
+<div>
+<h1 class="font-bold text-xl tracking-tight">Q-Vue</h1>
+<p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Wait With Clarity</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col text-right">
+<span class="text-sm font-bold text-slate-700">Central Station</span>
+<span class="text-[10px] text-slate-400 uppercase tracking-tighter">Quick Approval Wing</span>
+</div>
+<div class="h-10 w-[1px] bg-slate-200"></div>
+<button class="p-3 rounded-2xl bg-white shadow-sm border border-slate-100 hover:shadow-md transition-all">
+<span class="material-symbols-outlined text-slate-600">notifications</span>
+</button>
+<!--<div class="w-10 h-10 rounded-2xl bg-slate-200 overflow-hidden border-2 border-white shadow-sm">
+<img alt="User" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxzAcNfvp1q19nIM7pWPJ_k16ncplXGO_hpddJipCOdsiGHAbzyWgy2Nt0wOJfShwc5ApvHiN_XOvxoalGozD2IUrgBAEDPECduUO-i1JxYbi0J5ke6K8ksEHqLMqs8tD7iUvVtat2P6DUsMpxa3fq7GbIuIUTx53ryDmKr0hvkTkeJTXim99-7HiNV88auf_F5ozkKKjgZKeCn3ISCLESDPVoV9NV1_ASLUl7jhe9_s5D88B5qF1YvyrBUCkz11br1zgq8OLrHSM"/>
+</div>--><!--user login removed-->
+</div>
+</header>
+<main class="flex-grow p-10 pb-40 max-w-[1600px] mx-auto w-full">
+<div id="view-status"> <!--navbar-delayreason pb-40 added-->
+
+
+<div class="grid grid-cols-12 gap-8 h-full">
+
+
+  <!-- LEFT COLUMN -->
+  <div class="col-span-12 lg:col-span-4 space-y-8">
+    <div class="bg-white p-10 rounded-[3rem] shadow-xl shadow-slate-200/50 border border-slate-50 flex flex-col items-center text-center relative overflow-hidden h-full">
+
+
+      <div class="absolute top-0 right-0 w-32 h-32 bg-[var(--mint-green)] rounded-bl-[100%] opacity-40"></div>
+
+
+      <div class="flex flex-col w-full items-center gap-8">
+        <span class="text-xs font-extrabold uppercase tracking-[0.2em] text-slate-400">
+          Your Active Ticket
+        </span>
+
+
+        <div class="w-full max-w-sm bg-[var(--mint-green)] rounded-[2rem] px-8 py-10 text-center">
+          <p class="text-xs tracking-widest uppercase text-slate-500 mb-2">Ticket Number</p>
+          {% if active %}
+  <p class="text-6xl font-black text-slate-900 mb-4">
+    {{ active.ticket }}
+  </p>
+{% else %}
+  <p class="text-2xl font-bold text-slate-400">No Active Ticket</p>
+{% endif %}
+
+
+          <span class="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full text-xs font-bold text-slate-700">
+            ⚡ Quick Approval
+          </span>
+        </div>
+
+
+        <div class="grid grid-cols-2 gap-4 w-full max-w-sm mt-6">
+          <div class="bg-slate-50 rounded-2xl p-6 text-center">
+            <p class="text-xs uppercase text-slate-400">Position</p>
+            <p id="position-value" class="text-2xl font-bold">
+  {{ active.position if active else "-" }}
+</p>
+
+
+
+
+          </div>
+
+
+          <div class="bg-slate-50 rounded-2xl p-6 text-center">
+            <p class="text-xs uppercase text-slate-400">Est. Wait</p>
+            <p id="wait-value" class="text-2xl font-bold">
+  {{ active.wait if active else "-" }} min
+</p>
+
+
+
+
+          </div>
+
+
+          <div class="col-span-2 bg-[var(--soft-blue)] border border-blue-100 rounded-2xl px-6 py-7 min-h-[110px] flex flex-col justify-center">
+            <p class="text-[10px] font-extrabold text-blue-400 uppercase tracking-widest mb-2">
+              Est. time analyser
+            </p>
+            <p class="text-sm font-bold text-slate-700">
+  {{ advisor_text }}
+</p>
+
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+
+  <!-- MIDDLE COLUMN -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+  <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 flex-grow">
+    <!-- LIVE PROCESS QUEUES -->
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl font-bold text-slate-800">Live Process Queues</h3>
+      <div class="flex items-center gap-2 px-3 py-1 bg-red-50 text-red-500 rounded-full">
+        <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+        <span class="text-[10px] font-bold uppercase tracking-wider">Live</span>
+      </div>
+    </div>
+
+
+    <!-- PROCESS COUNTERS -->
+    <div class="grid grid-cols-2 gap-4">
+
+
+      <!-- COUNTER C1 (D QUEUE) -->
+      <div class="rounded-3xl bg-slate-50 border border-slate-100 p-5">
+        <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mb-2">C1</p>
+
+
+        <!-- NOW SERVING -->
+        <div class="rounded-2xl bg-[var(--soft-blue)] border border-blue-100 px-4 py-3 flex justify-between items-center mb-3">
+          <span class="text-xs font-bold text-blue-500 uppercase tracking-widest">Now Serving</span>
+          <span id="C1-now" class="text-lg font-black text-blue-700">D12</span>
+        </div>
+
+
+        <div class="h-px bg-slate-200 mb-3"></div>
+
+
+        <!-- NEIGHBORHOOD -->
+        <div class="space-y-2">
+          <div id="C1-n1" class="h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">D13</div>
+          <div id="C1-n2" class="h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">D14</div>
+          <div id="C1-n3" class="h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-sm font-bold text-slate-700 opacity-70">D15</div>
+        </div>
+      </div>
+
+
+      <!-- COUNTER C2 (A QUEUE - YOUR QUEUE) -->
+      <div class="rounded-3xl bg-[var(--soft-blue)]/60 border border-[var(--mint-dark)]/30 p-5">
+        <p class="text-[10px] font-extrabold uppercase tracking-widest text-[var(--mint-dark)] mb-2">
+          C2
+        </p>
+
+
+        <!-- NOW SERVING -->
+        <div class="rounded-2xl bg-white border border-[var(--mint-dark)]/30 px-4 py-3 flex justify-between items-center mb-3">
+          <span class="text-xs font-bold text-[var(--mint-dark)] uppercase tracking-widest">Now Serving</span>
+          <span id="C2-now" class="text-lg font-black text-slate-900">A05</span>
+        </div>
+
+
+        <div class="h-px bg-[var(--mint-dark)]/30 mb-3"></div>
+
+
+        <!-- NEIGHBORHOOD (JS will mark "(You)" + red border on the right slot) -->
+        <div class="space-y-2">
+          <div id="C2-n1" class="h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">A06</div>
+          <div id="C2-n2" class="h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">A07</div>
+          <div id="C2-n3" class="h-9 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">A08</div>
+        </div>
+      </div>
+
+
+      <!-- COUNTER C3 (B QUEUE) -->
+      <div class="rounded-3xl bg-[var(--soft-blue)]/60 border border-[var(--mint-dark)]/30 p-5">
+
+
+       <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mb-2">C3</p>
+
+
+
+
+        <!-- NOW SERVING -->
+        <div class="rounded-2xl bg-white border border-[var(--mint-dark)]/30 px-4 py-3 flex justify-between items-center mb-3">
+
+
+         <span class="text-xs font-bold text-[var(--mint-dark)] uppercase tracking-widest">Now Serving</span>
+
+
+         <span id="C3-now" class="text-lg font-black text-slate-900">B01</span>
+
+
+        </div>
+
+
+        <div class="h-px bg-slate-200 mb-3"></div>
+
+
+        <div class="space-y-2">
+          <div id="C3-n1" class="h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">B02</div>
+          <div id="C3-n2" class="h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">B03</div>
+          <div id="C3-n3" class="h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-sm font-bold text-slate-700 opacity-70">B04</div>
+        </div>
+      </div>
+
+
+      <!-- COUNTER C4 (C QUEUE) -->
+      <div class="rounded-3xl bg-slate-50 border border-slate-100 p-5">
+        <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mb-2">C4</p>
+
+
+        <!-- NOW SERVING -->
+        <div class="rounded-2xl bg-[var(--soft-blue)] border border-blue-100 px-4 py-3 flex justify-between items-center mb-3">
+          <span class="text-xs font-bold text-blue-500 uppercase tracking-widest">Now Serving</span>
+          <span id="C4-now" class="text-lg font-black text-blue-700">C01</span>
+        </div>
+
+
+        <div class="h-px bg-slate-200 mb-3"></div>
+
+
+        <div class="space-y-2">
+          <div id="C4-n1" class="h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">C02</div>
+          <div id="C4-n2" class="h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">C03</div>
+          <div id="C4-n3" class="h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-sm font-bold text-slate-700 opacity-70">C04</div>
+        </div>
+      </div>
+
+
+    </div>
+    <!-- END LIVE PROCESS QUEUES -->
+  </div>
+</div>
+
+
+
+
+  <!-- RIGHT COLUMN -->
+  <div class="col-span-12 lg:col-span-4 space-y-8 flex flex-col">
+    <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 flex items-center gap-6">
+      <div class="w-20 h-20 rounded-full bg-[var(--mint-green)] flex items-center justify-center text-4xl">😊</div>
+      <div>
+        <h4 class="font-bold text-slate-800">Confidence Indicator</h4>
+       <p class="text-sm text-slate-500 leading-relaxed italic">
+  "{{ confidence_text }}"
+</p>
+
+
+      </div>
+    </div>
+
+
+    <div id="return-advisor-card"
+     class="bg-[var(--warm-amber)] p-8 rounded-[3rem] shadow-lg shadow-amber-200/40 border border-amber-100 flex-grow relative overflow-hidden">
+
+
+      <div class="absolute top-[-20px] right-[-20px] text-amber-600/10">
+        <span class="material-symbols-outlined text-[12rem]">timer</span>
+      </div>
+      <div class="relative z-10 flex flex-col h-full">
+       <h4 class="text-xl font-bold text-amber-900 mb-2">Return Advisor</h4>
+
+
+<p id="return-advisor-text"
+   class="text-sm text-amber-800/80 mb-8 max-w-[200px]">
+  You have a safe window to step away for a quick break.
+</p>
+
+
+<div class="mt-auto flex items-end justify-between">
+  <div>
+    <span id="safe-timer"
+          class="text-5xl font-black text-amber-900">
+      08:45
+    </span>
+    <p class="text-[10px] font-bold uppercase tracking-widest text-amber-600 mt-1">
+      Safe Minutes Remaining
+    </p>
+  </div>
+</div>
+
+
+      </div>
+    </div>
+
+
+    <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100">
+      <div class="flex items-center justify-between mb-6">
+        <h4 class="font-bold text-slate-800">Queue Progress</h4>
+        <span class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-[10px] font-bold uppercase">🟢</span>
+      </div>
+      <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden flex">
+  <div id="queue-progress-bar"
+       class="h-full bg-[var(--mint-dark)] transition-all duration-700 ease-out"
+       style="width: 0%;">
+  </div>
+</div>
+
+
+      <div id="queue-progress-text"
+     class="flex justify-between mt-3 text-[10px] font-bold uppercase tracking-widest transition-all duration-700">
+  <span id="progress-left" class="text-slate-400">Just Joined</span>
+  <span id="progress-right" class="text-[var(--mint-dark)]">Almost There!</span>
+</div>
+
+
+    </div>
+  </div>
+
+
+</div>
+
+
+<!--the view tickets div deleted-->
+<div class="mt-10 bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 flex items-center gap-8 px-10">
+<div class="flex items-center gap-3 shrink-0">
+<span class="material-symbols-outlined text-amber-500">info</span>
+<span class="font-bold text-slate-400 uppercase tracking-widest text-xs">Reasons for Delay</span>
+</div>
+<div class="h-6 w-[1px] bg-slate-200"></div>
+<div class="flex gap-4 overflow-x-auto no-scrollbar">
+<span class="px-5 py-2 rounded-full bg-slate-50 border border-slate-100 text-sm font-medium text-slate-600 whitespace-nowrap">
+                    Currently processing complex documentation
+                </span>
+<span class="px-5 py-2 rounded-full bg-slate-50 border border-slate-100 text-sm font-medium text-slate-600 whitespace-nowrap">
+                    Staff shift transition in 15m
+                </span>
+<span class="px-5 py-2 rounded-full bg-slate-50 border border-slate-100 text-sm font-medium text-slate-600 whitespace-nowrap">
+                    System maintenance (Partially Active)
+                </span>
+</div>
+</div>
+</main>
+<!-- BOTTOM NAVIGATION (STATUS PAGE) -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-[2rem] shadow-2xl flex items-center gap-10 z-50">
+
+
+  <!-- STATUS (ACTIVE ON THIS PAGE) -->
+  <div class="flex flex-col items-center gap-1">
+    <span class="material-symbols-outlined text-white opacity-100">
+      dashboard
+    </span>
+    <span class="text-[9px] font-bold uppercase tracking-widest opacity-100">
+      Status
+    </span>
+  </div>
+
+
+  <!-- TICKETS (NAVIGATES TO TICKET PAGE) -->
+  <a href="/tickets" class="flex flex-col items-center gap-1 group">
+    <span class="material-symbols-outlined text-white/40 group-hover:text-white transition-all">
+      confirmation_number
+    </span>
+    <span class="text-[9px] font-bold uppercase tracking-widest opacity-40 group-hover:opacity-100">
+      Tickets
+    </span>
+  </a>
+
+
+
+
+  <!-- HELP (inactive for now) -->
+  <a href="/help"
+   class="flex flex-col items-center gap-1 opacity-40 hover:opacity-100 transition">
+  <span class="material-symbols-outlined">help</span>
+  <span class="text-[9px] font-bold uppercase tracking-widest">Help</span>
+</a>
+
+
+
+
+</div>
+
+
+<!-- above some code deleted script added-->
+
+
+<!-- COUNTER REACHED MODAL -->
+<div id="counter-modal"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-[999]">
+
+
+  <div class="bg-white rounded-[2.5rem] p-10 max-w-md w-full shadow-2xl text-center animate-fade-in">
+    <div class="text-6xl mb-4">🎉</div>
+
+
+    <h2 class="text-2xl font-black text-slate-800 mb-3">
+      You’ve Reached the Counter
+    </h2>
+
+
+    <p class="text-sm text-slate-600 mb-8 leading-relaxed">
+      Thank you for waiting patiently.  
+      You may now proceed to the counter.  
+      If required, you can generate another ticket.
+    </p>
+
+
+    <div class="flex gap-4 justify-center">
+      <button onclick="closeModal()"
+              class="px-6 py-3 rounded-full bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 transition">
+        Close
+      </button>
+
+
+      <a href="/tickets"
+         class="px-6 py-3 rounded-full bg-[var(--mint-dark)] text-white font-bold hover:opacity-90 transition">
+        Generate New Ticket
+      </a>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<script>
+let counterPopupShown = false;
+let arrivedAtCounter = false;
+let estWaitMin = 0;
+let safeSeconds = 0;
+let lastBackendSync = Date.now();
+
+
+
+
+/* =================================================
+   RETURN ADVISOR – NO-BUTTON VERSION (FINAL)
+   ================================================= */
+
+
+(function () {
+
+
+  const PREDICTABILITY = "stable";
+  const ALERT_THRESHOLD = 120;
+
+
+  const cardEl = document.getElementById("return-advisor-card");
+  const timerEl = document.getElementById("safe-timer");
+  const textEl  = document.getElementById("return-advisor-text");
+
+
+  if (!cardEl || !timerEl || !textEl) return;
+
+
+  estWaitMin = Number("{{ active.wait if active else 0 }}");
+  lastBackendSync = Date.now();
+  alertTriggered = false;
+
+
+  function calculateSafeSeconds(waitMin) {
+    if (!waitMin || waitMin <= 0) return 0;
+
+
+    const riskBufferMin = Math.max(5, 0.15 * waitMin);
+    let varianceBufferMin = 5;
+
+
+    if (PREDICTABILITY === "moderate") varianceBufferMin = 10;
+    if (PREDICTABILITY === "volatile") varianceBufferMin = 20;
+
+
+    return Math.floor(
+      Math.max(0, waitMin - riskBufferMin - varianceBufferMin) * 60
+    );
+  }
+
+
+  let safeSeconds = calculateSafeSeconds(estWaitMin);
+
+
+  function formatTime(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  }
+
+
+  function setAmber() {
+    cardEl.classList.remove("bg-red-50", "border-red-200");
+    cardEl.classList.add("bg-[var(--warm-amber)]", "border-amber-100");
+  }
+
+
+  function setRed() {
+    cardEl.classList.remove("bg-[var(--warm-amber)]", "border-amber-100");
+    cardEl.classList.add("bg-red-50", "border-red-200");
+  }
+
+
+  function updateUI(sec) {
+    timerEl.textContent = formatTime(sec);
+
+
+    if (sec > 300) {
+      setAmber();
+      textEl.textContent =
+        "Queue movement is stable. Short breaks are safe.";
+    }
+    else if (sec > ALERT_THRESHOLD) {
+      setAmber();
+      textEl.textContent =
+        "Queue is moving faster. Please stay nearby.";
+    }
+    else if (sec > 0) {
+      setRed();
+      textEl.textContent =
+        "Your turn may arrive soon. Please return.";
+
+
+      if (!alertTriggered) {
+        alertTriggered = true;
+        if ("Notification" in window &&
+            Notification.permission === "granted") {
+          new Notification("Transparent Queue", {
+            body: "Your turn may arrive soon."
+          });
+        }
+      }
+    }
+    else {
+      setRed();
+      textEl.textContent =
+        "Please remain at the counter area.";
+    }
+  }
+
+
+  function syncWithEstimatedWait() {
+    const now = Date.now();
+    const elapsedMin = (now - lastBackendSync) / 60000;
+
+
+    if (elapsedMin >= 1 && estWaitMin > 0) {
+      estWaitMin -= elapsedMin;
+      lastBackendSync = now;
+
+
+      const recalculatedSafe = calculateSafeSeconds(estWaitMin);
+      safeSeconds = Math.min(safeSeconds, recalculatedSafe);
+    }
+  }
+
+
+  function tick() {
+  if (arrivedAtCounter) return; // ⛔ HARD STOP TIMER
+
+
+  syncWithEstimatedWait();
+  if (safeSeconds > 0) safeSeconds--;
+  updateUI(safeSeconds);
+}
+
+
+
+
+  tick();
+  setInterval(tick, 1000);
+
+
+})();
+
+
+/* ==========================================
+   QUEUE PROGRESS INDICATOR – POSITIVE GRADIENT
+   ========================================== */
+
+
+(function () {
+
+
+  const progressBar = document.getElementById("queue-progress-bar");
+  if (!progressBar) return;
+
+
+  const initialPosition = Number("{{ active.position if active else 0 }}");
+  let currentPosition = initialPosition;
+
+
+  if (initialPosition <= 0) {
+    progressBar.style.width = "0%";
+    return;
+  }
+
+
+  function calculateProgress(initial, current) {
+    const progress = ((initial - current) / initial) * 100;
+    return Math.min(100, Math.max(0, Math.round(progress)));
+  }
+
+
+  function getColorForProgress(percent) {
+    if (percent < 30) {
+      return "#9FE0D6"; // mint
+    }
+    if (percent < 70) {
+      return "#4DB6AC"; // teal
+    }
+    if (percent < 90) {
+      return "#FFB74D"; // amber / orange
+    }
+    return "#66BB6A";   // green (success)
+  }
+
+
+  function updateProgress() {
+    const percent = calculateProgress(initialPosition, currentPosition);
+    progressBar.style.width = percent + "%";
+    progressBar.style.backgroundColor = getColorForProgress(percent);
+  }
+
+
+  // Initial render
+  updateProgress();
+
+
+  /* ------------------------------------------
+     OPTIONAL: Hook this into live updates later
+     ------------------------------------------
+     When you fetch new position from API:
+       currentPosition = data.position;
+       updateProgress();
+
+
+       fetch("/api/user/A15/status")
+  .then(r => r.json())
+  .then(data => {
+    currentPosition = data.position;
+    updateProgress();
+  });
+
+
+  */
+})();
+
+
+/* ==========================================
+   LIVE QUEUE UPDATES (THIS MAKES IT MOVE)
+   ========================================== */
+
+
+let initialPosition = Number("{{ active.position if active else 0 }}");
+let currentPosition = initialPosition;
+
+
+async function syncQueue() {
+  const res = await fetch("/api/live-status");
+  const data = await res.json();
+
+
+  if (!data.active) return;
+
+
+  // UPDATE TEXT
+  document.getElementById("position-value").textContent = data.position;
+  document.getElementById("wait-value").textContent = data.wait + " min";
+
+
+  // UPDATE VARIABLES USED BY YOUR LOGIC
+  currentPosition = Number(data.position);
+  estWaitMin = data.wait;
+  lastBackendSync = Date.now();
+
+
+  // UPDATE PROGRESS BAR
+  const bar = document.getElementById("queue-progress-bar");
+
+
+// 🚨 TERMINAL STATE: USER HAS REACHED COUNTER
+// 🚨 TERMINAL STATE: USER HAS REACHED COUNTER
+const pos = Number(data.position);
+
+
+if (pos === 1 && !counterPopupShown) {
+  arrivedAtCounter = true;
+
+
+  const bar = document.getElementById("queue-progress-bar");
+
+
+  bar.style.width = "100%";
+  bar.style.backgroundColor = "#66BB6A";
+
+
+  estWaitMin = 0;
+  safeSeconds = 0;
+
+
+  document.getElementById("safe-timer").textContent = "00:00";
+  document.getElementById("return-advisor-text").textContent =
+    "You’ve reached the counter. Please proceed.";
+
+
+  setTimeout(() => {
+    const modal = document.getElementById("counter-modal");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex", "items-center", "justify-center");
+  }, 900);
+  counterPopupShown = true;
+  return;
+}
+
+
+
+
+
+
+
+
+// NORMAL PROGRESS STATE
+if (initialPosition > 0) {
+  const percent = Math.min(
+    100,
+    Math.max(
+      0,
+      Math.round(((initialPosition - currentPosition) / initialPosition) * 100)
+    )
+  );
+
+
+  bar.style.width = percent + "%";
+}
+
+
+}
+
+
+// RUN EVERY 3 SECONDS
+setInterval(syncQueue, 3000);
+function closeModal() {
+  const modal = document.getElementById("counter-modal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+async function refreshQueues() {
+  try {
+    const res = await fetch("/api/process-queues");
+    const data = await res.json();
+
+
+    // Counter -> DB queue mapping
+    // C1 shows D, C2 shows A (your queue), C3 shows B, C4 shows C
+    const map = { C1: "A", C2: "B", C3: "C", C4: "D" };
+
+
+    function pad2(n) {
+      return String(n).padStart(2, "0");
+    }
+
+
+    function setText(id, txt) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = txt;
+    }
+
+
+    function resetSlot(el) {
+      if (!el) return;
+
+
+      // remove "you" styles if present
+      el.classList.remove("border-2", "border-red-400", "text-red-600", "font-black", "shadow-sm");
+
+
+      // ensure normal styles exist
+      el.classList.add("border", "border-slate-100", "text-slate-700", "font-bold");
+    }
+
+
+    function applyYou(el) {
+      if (!el) return;
+
+
+      el.classList.remove("border", "border-slate-100", "text-slate-700", "font-bold");
+      el.classList.add("border-2", "border-red-400", "text-red-600", "font-black", "shadow-sm");
+    }
+
+
+    for (const counter in map) {
+      const q = map[counter];
+      const block = data[q];
+
+
+      // if API error / missing data
+      if (!block) continue;
+
+
+      // NOW SERVING
+      setText(`${counter}-now`, block.now ? `${q}${pad2(block.now)}` : "--");
+
+
+      // 3 neighborhood slots
+      for (let i = 1; i <= 3; i++) {
+        const el = document.getElementById(`${counter}-n${i}`);
+        if (!el) continue;
+
+
+        resetSlot(el);
+
+
+        const num = block.neighborhood?.[i - 1];
+        if (!num) {
+          el.textContent = "--";
+          continue;
+        }
+
+
+        const isYou = block.is_active_queue && String(num) === String(block.active_number);
+        el.textContent = isYou ? `${q}${pad2(num)} (You)` : `${q}${pad2(num)}`;
+
+
+        if (isYou) applyYou(el);
+      }
+    }
+  } catch (err) {
+    console.error("refreshQueues failed:", err);
+  }
+}
+
+
+// first load + auto refresh
+refreshQueues();
+setInterval(refreshQueues, 3000);
+
+
+</script>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

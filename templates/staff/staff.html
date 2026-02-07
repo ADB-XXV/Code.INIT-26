@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Staff Counter Management - Transparent Queue</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<script>
+        const STAFF_API = "http://127.0.0.1:5001";
+        
+        const counterState = {
+            1: { skipped: [], mode: 'waiting' },
+            2: { skipped: [], mode: 'waiting' },
+            3: { skipped: [], mode: 'waiting' },
+            4: { skipped: [], mode: 'waiting' }
+        };
+
+        async function updateCount(queueType, counterId) {
+            try {
+                const response = await fetch(`${STAFF_API}/get-waiting-count/${queueType}`);
+                const data = await response.json();
+                document.getElementById(`wait-${counterId}`).innerText = data.count;
+            } catch (err) { console.error(err); }
+        }
+
+async function callNext(queueType, counterId) {
+            const tokenDisplay = document.getElementById(`token-${counterId}`);
+            const currentToken = tokenDisplay.innerText;
+
+            // 1. AUTO-SKIP: Move current token to skipped list if "Call Next" is pressed during service
+            if (currentToken !== "--" && currentToken !== "No tickets in queue") {
+                if (!counterState[counterId].skipped.includes(currentToken)) {
+                    counterState[counterId].skipped.unshift(currentToken);
+                    if (counterState[counterId].skipped.length > 2) counterState[counterId].skipped.pop();
+                    updateSkippedUI(counterId);
+                }
+            }
+
+            try {
+                let targetToken = null;
+
+                // 2. ALTERNATING CALL LOGIC
+                if (counterState[counterId].mode === 'skipped' && counterState[counterId].skipped.length > 0) {
+                    // Call the person from the skipped list
+                    targetToken = counterState[counterId].skipped.shift();
+                    counterState[counterId].mode = 'waiting';
+                    updateSkippedUI(counterId);
+                } else {
+                    // Call the person from the server (Waiting List)
+                    const response = await fetch(`${STAFF_API}/call-next/${queueType}`, { method: "POST" });
+                    const data = await response.json();
+                    
+                    if (data.serving) {
+                        targetToken = data.serving;
+                        // Toggle to skip mode for next call if we have items in skip box
+                        if (counterState[counterId].skipped.length > 0) counterState[counterId].mode = 'skipped';
+                    } else if (counterState[counterId].skipped.length > 0) {
+                        // If waiting list is empty, immediately pull from skipped list
+                        targetToken = counterState[counterId].skipped.shift();
+                        updateSkippedUI(counterId);
+                        counterState[counterId].mode = 'waiting';
+                    }
+                }
+
+                // 3. UI RENDER
+                if (targetToken) {
+                    tokenDisplay.style.fontSize = "3rem";
+                    tokenDisplay.innerText = targetToken;
+                } else {
+                    tokenDisplay.style.fontSize = "1rem";
+                    tokenDisplay.innerText = "No tickets in queue";
+                    counterState[counterId].mode = 'waiting';
+                }
+                updateCount(queueType, counterId);
+            } catch (err) { console.error(err); }
+        }
+
+        function updateSkippedUI(counterId) {
+            const container = document.getElementById(`skipped-${counterId}`);
+            if (counterState[counterId].skipped.length === 0) {
+                container.innerHTML = '<span class="text-xs font-bold text-gray-400 italic">No skips</span>';
+                return;
+            }
+            container.innerHTML = counterState[counterId].skipped
+                .map(t => `<div class="bg-white/50 p-2 rounded-lg border border-black/5 flex justify-between items-center shadow-sm"><span class="text-sm font-bold">${t}</span><span class="text-[8px] font-black uppercase opacity-40">Pending</span></div>`)
+                .join('');
+        }
+
+        async function completeTicket(queueType, counterId) {
+            const tokenDisplay = document.getElementById(`token-${counterId}`);
+            try {
+                const response = await fetch(`${STAFF_API}/complete/${queueType}`, { method: "POST" });
+                const data = await response.json();
+                if (data.completed) {
+                    tokenDisplay.style.fontSize = "3rem";
+                    tokenDisplay.innerText = "--";
+                    counterState[counterId].mode = 'waiting';
+                }
+                updateCount(queueType, counterId);
+            } catch (err) { console.error(err); }
+        }
+
+        window.onload = () => {
+            ['A','B','C','D'].forEach((type, i) => updateCount(type, i + 1));
+        };
+    </script>
+    <style>
+        body { font-family: 'Manrope', sans-serif;background: color #f8fafc; }
+        .counter-card { display: flex; flex-direction: column; padding: 1.5rem; border-radius: 1rem; border-width: 2px; height: 100%; }
+        
+        .token-display-box {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 130px; width: 100%; border-radius: 0.75rem; margin-bottom: 1rem;
+            background-color: rgba(255, 255, 255, 0.4); overflow: hidden;
+        }
+
+        .token-text-area { height: 60px; display: flex; align-items: center; justify-content: center; width: 100%; }
+        
+        /* Lower box for skipped tokens - same background/color theme */
+        .skipped-display-box {
+            min-height: 100px;
+            width: 100%;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.25);
+            border: 1px dashed rgba(0,0,0,0.1);
+        }
+
+        .waiting-badge {
+            font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 6px;
+            background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.05);
+        }
+
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+<header class="px-10 py-6 flex justify-between items-center bg-white/50 backdrop-blur-sm border-b border-slate-100">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl overflow-hidden shadow-lg">
+  <img 
+    src="{{ url_for('static', filename='logo.png.png') }}"
+    alt="Transparent Queue Logo"
+    class="w-full h-full object-contain"
+  />
+</div>
+<div>
+<h1 class="font-bold text-xl tracking-tight">Q-Vue</h1>
+<p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">STAFF COUNTER MANAGEMENT</p>
+</div>
+</div>
+
+
+</header>
+<body class="bg-background-light dark:bg-background-dark text-[#111818] dark:text-white min-h-screen">
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+        
+
+        <main class="flex-1 flex flex-col items-center py-12">
+            <section class="w-full px-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    <div class="counter-card bg-[#e6f9f9] border-[#ccf2f2]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-[#006666]">Counter 1</h3>
+                            <span class="waiting-badge text-[#006666]">Left: <span id="wait-1">0</span></span>
+                        </div>
+                        <div class="token-display-box">
+                            <span class="text-[10px] font-bold text-[#618989] uppercase tracking-widest mb-1">Serving</span>
+                            <div class="token-text-area">
+                                <span id="token-1" style="font-size: 3rem;" class="font-black text-[#006666]">--</span>
+                            </div>
+                        </div>
+                        <div class="skipped-display-box">
+                            <p class="text-[10px] font-bold text-[#006666]/60 uppercase tracking-widest mb-2">Recently Skipped</p>
+                            <div id="skipped-1" class="flex flex-col gap-2">
+                                <span class="text-xs font-bold text-gray-400 italic">No skips</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <button onclick="callNext('A', 1)" class="h-12 rounded-xl bg-[#006666] text-white font-bold hover:opacity-90 transition-all shadow-md">Call Next</button>
+                            <button onclick="completeTicket('A', 1)" class="h-12 rounded-xl bg-white border-2 border-[#ccf2f2] text-[#006666] font-bold">Completed</button>
+                        </div>
+                    </div>
+
+                    <div class="counter-card bg-[#e6f0ff] border-[#cce0ff]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-[#0047b3]">Counter 2</h3>
+                            <span class="waiting-badge text-[#0047b3]">Left: <span id="wait-2">0</span></span>
+                        </div>
+                        <div class="token-display-box">
+                            <span class="text-[10px] font-bold text-[#618989] uppercase tracking-widest mb-1">Serving</span>
+                            <div class="token-text-area">
+                                <span id="token-2" style="font-size: 3rem;" class="font-black text-[#0047b3]">--</span>
+                            </div>
+                        </div>
+                        <div class="skipped-display-box">
+                            <p class="text-[10px] font-bold text-[#0047b3]/60 uppercase tracking-widest mb-2">Recently Skipped</p>
+                            <div id="skipped-2" class="flex flex-col gap-2">
+                                <span class="text-xs font-bold text-gray-400 italic">No skips</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <button onclick="callNext('B', 2)" class="h-12 rounded-xl bg-[#0047b3] text-white font-bold hover:opacity-90 transition-all shadow-md">Call Next</button>
+                            <button onclick="completeTicket('B', 2)" class="h-12 rounded-xl bg-white border-2 border-[#cce0ff] text-[#0047b3] font-bold">Completed</button>
+                        </div>
+                    </div>
+
+                    <div class="counter-card bg-[#fff8e6] border-[#ffecb3]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-[#855a00]">Counter 3</h3>
+                            <span class="waiting-badge text-[#855a00]">Left: <span id="wait-3">0</span></span>
+                        </div>
+                        <div class="token-display-box">
+                            <span class="text-[10px] font-bold text-[#618989] uppercase tracking-widest mb-1">Serving</span>
+                            <div class="token-text-area">
+                                <span id="token-3" style="font-size: 3rem;" class="font-black text-[#855a00]">--</span>
+                            </div>
+                        </div>
+                        <div class="skipped-display-box">
+                            <p class="text-[10px] font-bold text-[#855a00]/60 uppercase tracking-widest mb-2">Recently Skipped</p>
+                            <div id="skipped-3" class="flex flex-col gap-2">
+                                <span class="text-xs font-bold text-gray-400 italic">No skips</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <button onclick="callNext('C', 3)" class="h-12 rounded-xl bg-[#855a00] text-white font-bold hover:opacity-90 transition-all shadow-md">Call Next</button>
+                            <button onclick="completeTicket('C', 3)" class="h-12 rounded-xl bg-white border-2 border-[#ffecb3] text-[#855a00] font-bold">Completed</button>
+                        </div>
+                    </div>
+
+                    <div class="counter-card bg-[#fff1e6] border-[#ffd9cc]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-[#bf360c]">Counter 4</h3>
+                            <span class="waiting-badge text-[#bf360c]">Left: <span id="wait-4">0</span></span>
+                        </div>
+                        <div class="token-display-box">
+                            <span class="text-[10px] font-bold text-[#618989] uppercase tracking-widest mb-1">Serving</span>
+                            <div class="token-text-area">
+                                <span id="token-4" style="font-size: 3rem;" class="font-black text-[#bf360c]">--</span>
+                            </div>
+                        </div>
+                        <div class="skipped-display-box">
+                            <p class="text-[10px] font-bold text-[#bf360c]/60 uppercase tracking-widest mb-2">Recently Skipped</p>
+                            <div id="skipped-4" class="flex flex-col gap-2">
+                                <span class="text-xs font-bold text-gray-400 italic">No skips</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <button onclick="callNext('D', 4)" class="h-12 rounded-xl bg-[#bf360c] text-white font-bold hover:opacity-90 transition-all shadow-md">Call Next</button>
+                            <button onclick="completeTicket('D', 4)" class="h-12 rounded-xl bg-white border-2 border-[#ffd9cc] text-[#bf360c] font-bold">Completed</button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const STAFF_API = "http://127.0.0.1:5001";
+        
+        // Track local state for skips and alternating logic
+        const counterState = {
+            1: { skipped: [], mode: 'waiting' },
+            2: { skipped: [], mode: 'waiting' },
+            3: { skipped: [], mode: 'waiting' },
+            4: { skipped: [], mode: 'waiting' }
+        };
+
+        async function updateCount(queueType, counterId) {
+            try {
+                const response = await fetch(`${STAFF_API}/get-waiting-count/${queueType}`);
+                const data = await response.json();
+                document.getElementById(`wait-${counterId}`).innerText = data.count;
+            } catch (err) { console.error(err); }
+        }
+
+        async function callNext(queueType, counterId) {
+            const tokenDisplay = document.getElementById(`token-${counterId}`);
+            const currentToken = tokenDisplay.innerText;
+
+            // 1. AUTO-SKIP: If a token is currently being shown, move it to skipped list
+            if (currentToken !== "--" && currentToken !== "No tickets in queue") {
+                if (!counterState[counterId].skipped.includes(currentToken)) {
+                    counterState[counterId].skipped.unshift(currentToken);
+                    if (counterState[counterId].skipped.length > 2) counterState[counterId].skipped.pop();
+                    updateSkippedUI(counterId);
+                }
+            }
+
+            try {
+                let targetToken = null;
+
+                // 2. ALTERNATING LOGIC
+                if (counterState[counterId].mode === 'skipped' && counterState[counterId].skipped.length > 0) {
+                    targetToken = counterState[counterId].skipped.shift();
+                    counterState[counterId].mode = 'waiting';
+                    updateSkippedUI(counterId);
+                } else {
+                    const response = await fetch(`${STAFF_API}/call-next/${queueType}`, { method: "POST" });
+                    const data = await response.json();
+                    targetToken = data.serving;
+                    if (counterState[counterId].skipped.length > 0) counterState[counterId].mode = 'skipped';
+                }
+
+                if (targetToken) {
+                    tokenDisplay.style.fontSize = "3rem";
+                    tokenDisplay.innerText = targetToken;
+                } else {
+                    tokenDisplay.style.fontSize = "1rem";
+                    tokenDisplay.innerText = "No tickets in queue";
+                }
+                updateCount(queueType, counterId);
+            } catch (err) { console.error(err); }
+        }
+
+        function updateSkippedUI(counterId) {
+            const container = document.getElementById(`skipped-${counterId}`);
+            if (counterState[counterId].skipped.length === 0) {
+                container.innerHTML = '<span class="text-xs font-bold text-gray-400 italic">No skips</span>';
+                return;
+            }
+            container.innerHTML = counterState[counterId].skipped
+                .map(t => `<div class="bg-white/50 p-2 rounded-lg border border-black/5 flex justify-between items-center shadow-sm"><span class="text-sm font-bold">${t}</span><span class="text-[8px] font-black uppercase opacity-40">Pending</span></div>`)
+                .join('');
+        }
+
+        async function completeTicket(queueType, counterId) {
+            const tokenDisplay = document.getElementById(`token-${counterId}`);
+            try {
+                const response = await fetch(`${STAFF_API}/complete/${queueType}`, { method: "POST" });
+                const data = await response.json();
+                if (data.completed) {
+                    tokenDisplay.style.fontSize = "3rem";
+                    tokenDisplay.innerText = "--";
+                    counterState[counterId].mode = 'waiting';
+                }
+                updateCount(queueType, counterId);
+            } catch (err) { console.error(err); }
+        }
+
+        window.onload = () => {
+            ['A','B','C','D'].forEach((type, i) => updateCount(type, i + 1));
+        };
+    </script>
+</body>
+</html>

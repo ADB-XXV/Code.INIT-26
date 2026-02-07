@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Active Status - Transparent Queue</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+    @keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+        :root {
+            --mint-green: #E8F5F1;
+            --mint-dark: #599994;
+            --soft-blue: #E3F2FD;
+            --blue-accent: #64B5F6;
+            --warm-amber: #FFF8E1;
+            --amber-accent: #F29472;
+            --soft-orange: #FFF3E0;
+            --orange-accent: #FB8C00;
+            --slate-base: #F8FAFC;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--slate-base);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+<header class="px-10 py-6 flex justify-between items-center bg-white/50 backdrop-blur-sm border-b border-slate-100">
+
+
+  <!-- LEFT: Logo + Title -->
+  <div class="flex items-center gap-3">
+    <div class="w-12 h-12 rounded-2xl overflow-hidden shadow-lg">
+      <img
+        src="{{ url_for('static', filename='Gemini_Generated_Image_4mxgvv4mxgvv4mxg.png') }}"
+        alt="Transparent Queue Logo"
+        class="w-full h-full object-contain"
+      />
+    </div>
+
+
+    <div>
+      <h1 class="font-bold text-xl tracking-tight">Q-Vue</h1>
+      <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">
+        Wait With Clarity
+      </p>
+    </div>
+  </div>
+
+
+  <!-- RIGHT: Station + Notification -->
+  <div class="flex items-center gap-6">
+    <div class="flex flex-col text-right">
+      <span class="text-sm font-bold text-slate-700">Central Station</span>
+      <span class="text-[10px] text-slate-400 uppercase tracking-tighter">
+        New Registration
+      </span>
+    </div>
+
+
+    <div class="h-10 w-[1px] bg-slate-200"></div>
+
+
+    <button class="p-3 rounded-2xl bg-white shadow-sm border border-slate-100 hover:shadow-md transition-all relative">
+      <span class="material-symbols-outlined text-slate-600">notifications</span>
+      <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+    </button>
+  </div>
+
+
+</header>
+
+
+<main class="flex-grow p-10 pb-40 max-w-[1600px] mx-auto w-full">
+   
+<div class="grid grid-cols-12 gap-8">
+<div class="col-span-12 lg:col-span-8">
+<div class="mb-10">
+<h2 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">How can we help you today?</h2>
+<p class="text-lg text-slate-500">Select another service or keep your current ticket.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group flex flex-col justify-between h-[320px] relative overflow-hidden">
+<div class="absolute top-0 right-0 w-24 h-24 bg-[var(--mint-green)] rounded-bl-[100%] opacity-50 transition-all group-hover:scale-110"></div>
+<div>
+<div class="w-14 h-14 rounded-2xl bg-[var(--mint-green)] flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[var(--mint-dark)] text-3xl">offline_bolt</span>
+</div>
+<h3 class="text-2xl font-bold text-slate-900 mb-2">Quick Approval</h3>
+<p class="text-slate-500 text-sm leading-relaxed max-w-[200px]">Simple document verification and fast-track processing.</p>
+</div>
+<div class="flex justify-between items-center mt-6">
+<div>
+<p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Wait Time</p>
+<p class="text-lg font-bold text-[var(--mint-dark)]">~4 mins</p>
+</div>
+<button onclick="takeTicket('A')"
+  class="bg-[var(--mint-dark)] text-white px-6 py-3 rounded-2xl font-bold text-sm hover:opacity-90 transition-opacity flex items-center gap-2">
+  Take Ticket <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+
+
+</div>
+</div>
+<div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group flex flex-col justify-between h-[320px] relative overflow-hidden">
+<div class="absolute top-0 right-0 w-24 h-24 bg-[var(--soft-blue)] rounded-bl-[100%] opacity-50 transition-all group-hover:scale-110"></div>
+<div>
+<div class="w-14 h-14 rounded-2xl bg-[var(--soft-blue)] flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[var(--blue-accent)] text-3xl">description</span>
+</div>
+<h3 class="text-2xl font-bold text-slate-900 mb-2">Document Review</h3>
+<p class="text-slate-500 text-sm leading-relaxed max-w-[200px]">Detailed check of applications and supporting evidence.</p>
+</div>
+<div class="flex justify-between items-center mt-6">
+<div>
+<p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Wait Time</p>
+<p class="text-lg font-bold text-[var(--blue-accent)]">~12 mins</p>
+</div>
+<button onclick="takeTicket('B')"
+  class="bg-[var(--mint-dark)] text-white px-6 py-3 rounded-2xl font-bold text-sm hover:opacity-90 transition-opacity flex items-center gap-2">
+  Take Ticket <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+
+
+</div>
+</div>
+<div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group flex flex-col justify-between h-[320px] relative overflow-hidden">
+<div class="absolute top-0 right-0 w-24 h-24 bg-[var(--warm-amber)] rounded-bl-[100%] opacity-50 transition-all group-hover:scale-110"></div>
+<div>
+<div class="w-14 h-14 rounded-2xl bg-[var(--warm-amber)] flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[var(--amber-accent)] text-3xl">forum</span>
+</div>
+<h3 class="text-2xl font-bold text-slate-900 mb-2">Consultation</h3>
+<p class="text-slate-500 text-sm leading-relaxed max-w-[200px]">One-on-one advisory session with our specialists.</p>
+</div>
+<div class="flex justify-between items-center mt-6">
+<div>
+<p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Wait Time</p>
+<p class="text-lg font-bold text-[var(--amber-accent)]">~25 mins</p>
+</div>
+<button onclick="takeTicket('C')"
+  class="bg-[var(--mint-dark)] text-white px-6 py-3 rounded-2xl font-bold text-sm hover:opacity-90 transition-opacity flex items-center gap-2">
+  Take Ticket <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+
+
+</div>
+</div>
+<div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group flex flex-col justify-between h-[320px] relative overflow-hidden">
+<div class="absolute top-0 right-0 w-24 h-24 bg-[var(--soft-orange)] rounded-bl-[100%] opacity-50 transition-all group-hover:scale-110"></div>
+<div>
+<div class="w-14 h-14 rounded-2xl bg-[var(--soft-orange)] flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[var(--orange-accent)] text-3xl">account_tree</span>
+</div>
+<h3 class="text-2xl font-bold text-slate-900 mb-2">Complex Filing</h3>
+<p class="text-slate-500 text-sm leading-relaxed max-w-[200px]">Multi-stage applications and corporate registrations.</p>
+</div>
+<div class="flex justify-between items-center mt-6">
+<div>
+<p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Wait Time</p>
+<p class="text-lg font-bold text-[var(--orange-accent)]">~45 mins</p>
+</div>
+<button onclick="takeTicket('D')"
+  class="bg-[var(--mint-dark)] text-white px-6 py-3 rounded-2xl font-bold text-sm hover:opacity-90 transition-opacity flex items-center gap-2">
+  Take Ticket <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+
+
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4">
+<div class="bg-white rounded-[2.5rem] p-10 shadow-sm border border-slate-100 h-full">
+
+
+  <h3 class="text-2xl font-bold text-slate-800 mb-8">
+    What each service covers
+  </h3>
+
+
+  <div class="space-y-7 text-sm text-slate-600 leading-relaxed">
+
+
+    <div>
+      <h4 class="font-bold text-slate-700 mb-1">Quick Approval</h4>
+      <p>
+        Identity verification, receipt stamping, simple certificate collection,
+        and minor corrections that can be completed in a single step.
+      </p>
+    </div>
+
+
+    <div>
+      <h4 class="font-bold text-slate-700 mb-1">Document Review</h4>
+      <p>
+        Verification of submitted applications, checking completeness,
+        identifying missing documents, and explaining resubmission requirements.
+      </p>
+    </div>
+
+
+    <div>
+      <h4 class="font-bold text-slate-700 mb-1">Consultation</h4>
+      <p>
+        One-on-one guidance for eligibility doubts, form-filling help,
+        process clarification, and resolving user-specific issues.
+      </p>
+    </div>
+
+
+    <div>
+      <h4 class="font-bold text-slate-700 mb-1">Complex Filing</h4>
+      <p>
+        Multi-stage submissions involving permits, licenses, or applications
+        requiring additional verification and cross-department approval.
+      </p>
+    </div>
+
+
+  </div>
+
+
+  <div class="mt-10 pt-6 border-t border-slate-100 text-xs text-slate-500">
+    Tickets are routed automatically to dedicated counters based on service type.
+    Each queue progresses independently to ensure fairness and predictable wait times.
+  </div>
+
+
+</div>
+
+
+
+
+
+
+</div>
+</div>
+
+
+</div>
+</div>
+</div>
+</div>
+</main>
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-[2rem] shadow-2xl flex items-center gap-10 z-50">
+<!-- STATUS (GO BACK TO STATUS PAGE) -->
+<a href="/" class="flex flex-col items-center gap-1 group">
+  <span class="material-symbols-outlined text-white/40 group-hover:text-white transition-all">
+    dashboard
+  </span>
+  <span class="text-[9px] font-bold uppercase tracking-widest opacity-40 group-hover:opacity-100">
+    Status
+  </span>
+</a>
+
+
+<button class="flex flex-col items-center gap-1 group">
+<span class="material-symbols-outlined text-white opacity-100">confirmation_number</span>
+<span class="text-[9px] font-bold uppercase tracking-widest opacity-100">Tickets</span>
+</button>
+<a href="/help"
+   class="flex flex-col items-center gap-1 opacity-40 hover:opacity-100 transition">
+  <span class="material-symbols-outlined">help</span>
+  <span class="text-[9px] font-bold uppercase tracking-widest">Help</span>
+</a>
+
+
+</div>
+
+
+
+
+<!-- TICKET SUCCESS MODAL -->
+<div id="ticket-modal"
+     class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[999] hidden">
+
+
+  <div class="bg-white rounded-[3rem] p-10 w-[420px] shadow-2xl border border-slate-100
+              animate-[fadeIn_0.25s_ease-out] text-center relative">
+
+
+    <!-- Icon -->
+    <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-[var(--mint-green)]
+                flex items-center justify-center">
+      <span class="material-symbols-outlined text-4xl text-[var(--mint-dark)]">
+        confirmation_number
+      </span>
+    </div>
+
+
+    <!-- Text -->
+    <p class="text-xs font-extrabold uppercase tracking-[0.25em] text-slate-400 mb-3">
+      Your Ticket
+    </p>
+
+
+    <h2 id="modal-ticket-number"
+        class="text-6xl font-black text-slate-900 tracking-tight mb-6">
+      A00
+    </h2>
+
+
+    <p class="text-sm text-slate-500 mb-10">
+      Please wait nearby. You’ll be notified when it’s your turn.
+    </p>
+
+
+    <!-- Button -->
+    <button onclick="closeTicketModal()"
+            class="bg-[var(--mint-dark)] text-white font-bold px-8 py-4 rounded-2xl
+                   hover:opacity-90 transition-opacity w-full">
+      Got it
+    </button>
+
+
+  </div>
+</div>
+
+
+
+
+<!--this is added for the popup, above code ny chatgpt-->
+
+
+<!--Added JS at the time 10.57-->
+<script>
+function takeTicket(queue) {
+  fetch("/api/take-ticket", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ queue: queue })
+  })
+  .then(res => res.json())
+  .then(data => {
+    showTicketModal(data.ticket);
+  });
+}
+
+
+function showTicketModal(ticket) {
+  document.getElementById("modal-ticket-number").innerText = ticket;
+  document.getElementById("ticket-modal").classList.remove("hidden");
+}
+
+
+function closeTicketModal() {
+  document.getElementById("ticket-modal").classList.add("hidden");
+}
+</script>
+
+
+
+
+</body></html>
+
+
+
+
+
+
+

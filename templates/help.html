@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transparent Queue Help Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2beeee",
+                        "background-light": "#f6f8f8",
+                        "background-dark": "#102222",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#111818] dark:text-white transition-colors duration-200">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Global Navigation Bar -->
+<header class="px-10 py-6 flex justify-between items-center bg-white/50 backdrop-blur-sm border-b border-slate-100">
+
+
+  <!-- LEFT: Logo + Title -->
+  <div class="flex items-center gap-3">
+    <div class="w-12 h-12 rounded-2xl overflow-hidden shadow-lg">
+      <img
+        src="{{ url_for('static', filename='Gemini_Generated_Image_4mxgvv4mxgvv4mxg.png') }}"
+        alt="Transparent Queue Logo"
+        class="w-full h-full object-contain"
+      />
+    </div>
+
+
+    <div>
+      <h1 class="font-bold text-xl tracking-tight">Q-Vue</h1>
+      <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">
+        Wait With Clarity
+      </p>
+    </div>
+  </div>
+
+
+  <!-- RIGHT: Station + Notification -->
+  <div class="flex items-center gap-6">
+    <div class="flex flex-col text-right">
+      <span class="text-sm font-bold text-slate-700">Central Station</span>
+      <span class="text-[10px] text-slate-400 uppercase tracking-tighter">
+        Help Page
+      </span>
+    </div>
+
+
+    <div class="h-10 w-[1px] bg-slate-200"></div>
+
+
+    <button class="p-3 rounded-2xl bg-white shadow-sm border border-slate-100 hover:shadow-md transition-all relative">
+      <span class="material-symbols-outlined text-slate-600">notifications</span>
+      <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+    </button>
+  </div>
+
+
+</header>
+<main class="flex flex-1 justify-center py-12 px-4 lg:px-40">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
+<!-- Hero Header -->
+<div class="flex flex-col gap-4 mb-12">
+<h1 class="text-[#111818] dark:text-white text-5xl font-extrabold tracking-tight">How can we help?</h1>
+<p class="text-[#618989] dark:text-gray-400 text-lg max-w-2xl font-medium">Explore guides, FAQs, and support information to ensure a transparent and stress-free queue experience.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+<!-- Main Content: Category Grid & FAQs -->
+<div class="lg:col-span-2 flex flex-col gap-12">
+<!-- Category Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Getting Started -->
+<div class="bg-white dark:bg-[#1a2e2e] p-6 rounded-xl border border-[#dbe6e6] dark:border-[#2a3c3c] shadow-sm hover:shadow-md transition-shadow">
+<div class="w-12 h-12 rounded-lg bg-[#E0F7F7] dark:bg-[#1e4444] flex items-center justify-center text-[#26A69A] mb-4">
+<span class="material-symbols-outlined text-3xl">rocket_launch</span>
+</div>
+<h3 class="text-lg font-bold text-[#111818] dark:text-white mb-2">Getting Started</h3>
+<p class="text-sm text-[#618989] dark:text-gray-400 leading-relaxed">Generate a ticket, get assigned to the correct counter, and track your position live as the queue progresses.</p>
+</div>
+<!-- Ticket & Queueing -->
+<div class="bg-white dark:bg-[#1a2e2e] p-6 rounded-xl border border-[#dbe6e6] dark:border-[#2a3c3c] shadow-sm hover:shadow-md transition-shadow">
+<div class="w-12 h-12 rounded-lg bg-[#E3F2FD] dark:bg-[#1b3a57] flex items-center justify-center text-[#1E88E5] mb-4">
+<span class="material-symbols-outlined text-3xl">confirmation_number</span>
+</div>
+<h3 class="text-lg font-bold text-[#111818] dark:text-white mb-2">Ticket &amp; Queueing</h3>
+<p class="text-sm text-[#618989] dark:text-gray-400 leading-relaxed">Tickets move automatically based on arrival order at each counter. Your position updates in real time as people are served.</p>
+</div>
+<!-- Wait Time Advisor -->
+<div class="bg-white dark:bg-[#1a2e2e] p-6 rounded-xl border border-[#dbe6e6] dark:border-[#2a3c3c] shadow-sm hover:shadow-md transition-shadow">
+<div class="w-12 h-12 rounded-lg bg-[#FFF8E1] dark:bg-[#4d442a] flex items-center justify-center text-[#FFB300] mb-4">
+<span class="material-symbols-outlined text-3xl">schedule</span>
+</div>
+<h3 class="text-lg font-bold text-[#111818] dark:text-white mb-2">Wait Time Advisor</h3>
+<p class="text-sm text-[#618989] dark:text-gray-400 leading-relaxed">Estimated wait time is calculated using live counter activity and recent service speeds to reduce uncertainty.</p>
+</div>
+<!-- Service Information -->
+<div class="bg-white dark:bg-[#1a2e2e] p-6 rounded-xl border border-[#dbe6e6] dark:border-[#2a3c3c] shadow-sm hover:shadow-md transition-shadow">
+<div class="w-12 h-12 rounded-lg bg-[#FBE9E7] dark:bg-[#4d322c] flex items-center justify-center text-[#F4511E] mb-4">
+<span class="material-symbols-outlined text-3xl">info</span>
+</div>
+<h3 class="text-lg font-bold text-[#111818] dark:text-white mb-2">Service Information</h3>
+<p class="text-sm text-[#618989] dark:text-gray-400 leading-relaxed">Each counter handles a specific process type. Tickets are routed only within their assigned counter to ensure fairness.</p>
+</div>
+</div>
+<!-- FAQ Section -->
+<div class="flex flex-col gap-6">
+<h2 class="text-2xl font-bold text-[#111818] dark:text-white">Frequently Asked Questions</h2>
+<div class="space-y-4">
+<div class="bg-white dark:bg-[#1a2e2e] p-6 rounded-xl border border-[#dbe6e6] dark:border-[#2a3c3c]">
+<h4 class="text-base font-bold text-[#111818] dark:text-white mb-2">What is a Safe Return Window?</h4>
+<p class="text-[#618989] dark:text-gray-400 text-sm leading-relaxed">
+                                            A Safe Return Window is a dedicated buffer period (usually 10-15 minutes) automatically granted when your turn is approaching. This allows you to walk back to the service location without worrying about losing your spot if the queue moves faster than expected.
+                                        </p>
+</div>
+<div class="bg-white dark:bg-[#1a2e2e] p-6 rounded-xl border border-[#dbe6e6] dark:border-[#2a3c3c]">
+<h4 class="text-base font-bold text-[#111818] dark:text-white mb-2">How is queue predictability calculated?</h4>
+<p class="text-[#618989] dark:text-gray-400 text-sm leading-relaxed">
+                                            Our system uses a combination of historical data from the same time/day, current staff levels, and real-time processing speeds. The "Wait Time Advisor" updates every 60 seconds to ensure the most accurate estimation possible.
+                                        </p>
+</div>
+<div class="bg-white dark:bg-[#1a2e2e] p-6 rounded-xl border border-[#dbe6e6] dark:border-[#2a3c3c]">
+<h4 class="text-base font-bold text-[#111818] dark:text-white mb-2">Can I join multiple queues at once?</h4>
+<p class="text-[#618989] dark:text-gray-400 text-sm leading-relaxed">
+                                            To ensure fairness for all users, most service providers limit active tickets to one per phone number. However, you can view the wait times of other nearby services at any time.
+                                        </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar: Contact Info -->
+<aside class="flex flex-col gap-6">
+<div class="bg-white dark:bg-[#1a2e2e] p-8 rounded-xl border border-[#dbe6e6] dark:border-[#2a3c3c] shadow-sm sticky top-24">
+<h3 class="text-xl font-bold text-[#111818] dark:text-white mb-4">Need more help?</h3>
+<p class="text-sm text-[#618989] dark:text-gray-400 mb-6 leading-relaxed">Our support team is available for technical issues and policy inquiries. We aim to respond within 24 hours.</p>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">mail</span>
+<div>
+<p class="text-xs font-bold uppercase tracking-wider text-[#618989] dark:text-gray-500">Email us</p>
+<p class="text-sm font-medium text-[#111818] dark:text-white">support@transqueue.com</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">menu_book</span>
+<div>
+<p class="text-xs font-bold uppercase tracking-wider text-[#618989] dark:text-gray-500">Resources</p>
+<a class="text-sm font-medium text-primary hover:underline" href="#">Full Documentation</a>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">public</span>
+<div>
+<p class="text-xs font-bold uppercase tracking-wider text-[#618989] dark:text-gray-500">Status</p>
+<p class="text-sm font-medium text-[#111818] dark:text-white flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500"></span> All systems operational
+                                            </p>
+</div>
+</div>
+</div>
+</div>
+<div class="p-6 rounded-xl bg-primary/10 dark:bg-primary/5 border border-primary/20">
+<p class="text-sm text-[#111818] dark:text-gray-300 italic">"Our mission is to eliminate the uncertainty of waiting, making your time yours again."</p>
+</div>
+</aside>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="mt-auto border-t border-[#dbe6e6] dark:border-[#2a3c3c] bg-white dark:bg-background-dark px-10 py-8 lg:px-40">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex items-center gap-2 opacity-50">
+<div class="size-4">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<p class="text-xs font-medium">© 2024 Transparent Queue. All rights reserved.</p>
+</div>
+<div class="flex gap-6 text-xs font-medium text-[#618989] dark:text-gray-400">
+<a class="hover:text-primary" href="#">Privacy Policy</a>
+<a class="hover:text-primary" href="#">Terms of Service</a>
+<a class="hover:text-primary" href="#">Cookie Settings</a>
+</div>
+</div>
+</footer>
+</div>
+</div>
+<!-- BOTTOM NAVIGATION (STATUS PAGE) -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-[2rem] shadow-2xl flex items-center gap-10 z-50">
+
+
+  <!-- STATUS -->
+  <a href="/"
+     class="flex flex-col items-center gap-1 opacity-40 hover:opacity-100 transition">
+    <span class="material-symbols-outlined">dashboard</span>
+    <span class="text-[9px] font-bold uppercase tracking-widest">Status</span>
+  </a>
+
+
+  <!-- TICKETS -->
+  <a href="/tickets"
+     class="flex flex-col items-center gap-1 opacity-40 hover:opacity-100 transition">
+    <span class="material-symbols-outlined">confirmation_number</span>
+    <span class="text-[9px] font-bold uppercase tracking-widest">Tickets</span>
+  </a>
+
+
+  <!-- HELP (ACTIVE) -->
+  <div class="flex flex-col items-center gap-1">
+    <span class="material-symbols-outlined text-white opacity-100">
+      help
+    </span>
+    <span class="text-[9px] font-bold uppercase tracking-widest opacity-100">
+      Help
+    </span>
+  </div>
+
+
+</div>
+
+
+
+
+</body></html>
+
+
+
