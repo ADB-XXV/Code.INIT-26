@@ -86,8 +86,44 @@ Polite closure after completion
 
 🛠️ Tech Stack
 Frontend: HTML, CSS, JavaScript
-
 Backend: Python (Flask)
+Data Handling: In‑memory queues (prototype‑friendly)
+
+UI Design: Google Stitch (for rapid, clean UI design)
+
+Note: Database persistence (MySQL) can be added easily, but was intentionally avoided to keep the prototype simple and reliable for a hackathon.
+
+🗂️ Project Structure
+project/
+├── app.py
+├── templates/
+│   ├── index.html        # Visitor dashboard
+│   ├── ticket.html       # Ticket selection
+│   ├── staff.html        # Staff dashboard
+│   └── display.html     # Public display
+├── static/
+│   ├── style.css
+│   └── assets/
+└── README.md
+▶️ How to Run the Project Locally
+1️⃣ Install dependencies
+pip install flask
+2️⃣ Run the server
+python app.py
+3️⃣ Open in browser
+http://127.0.0.1:5000
+🎯 Design Philosophy
+Transparency over speed
+
+Clarity over complexity
+
+Human understanding over automation
+
+Instead of hiding uncertainty, the system communicates it honestly, which builds trust and reduces frustration.
+
+🏁 Conclusion
+Transparent Queue demonstrates that impactful systems do not need heavy technology —
+they need clear thinking, fairness, and empathy for users.
 
 Data Handling: In‑memory queues (prototype‑friendly)
 
